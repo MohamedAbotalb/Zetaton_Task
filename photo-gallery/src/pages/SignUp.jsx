@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Grid } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { setDoc, doc } from "firebase/firestore";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, db } from "../config/firebase";
 
 export const SignUp = () => {
   const [firstName, setFirstName] = useState("");
@@ -8,6 +12,7 @@ export const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const validate = () => {
     const tempErrors = {};
@@ -25,20 +30,33 @@ export const SignUp = () => {
       tempErrors.email = "Email is not valid";
 
     if (!password) tempErrors.password = "Password is required";
-    else if (password.length <= 6)
+    else if (password.length < 6)
       tempErrors.password = "Password must be at least 6 characters long";
 
     setErrors(tempErrors);
     return Object.values(tempErrors).every((error) => error === "");
   };
 
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (validate()) {
-      // TODO Handle sign-up logic here
-      alert(`Sign Up functionality not implemented yet.
-        First Name: ${firstName}
-        Last Name: ${lastName}
-        Email: ${email}`);
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+        const user = auth.currentUser;
+        if (user) {
+          await setDoc(doc(db, "Users", user.uid), {
+            firstName,
+            lastName,
+            email,
+            favorites: [],
+          });
+        }
+        toast.success("User Registered Successfully!", {
+          position: "top-right",
+        });
+        navigate("/signin");
+      } catch (error) {
+        toast.error("Email is already in use", { position: "top-right" });
+      }
     }
   };
 
@@ -86,7 +104,7 @@ export const SignUp = () => {
       />
       <Button
         onClick={handleSignUp}
-        sx={{ my: 2, mr: 2, py: 1.5 }}
+        sx={{ my: 2, py: 1.5 }}
         variant="contained"
         color="primary"
         fullWidth
@@ -96,7 +114,7 @@ export const SignUp = () => {
 
       <Grid container justifyContent="flex-end">
         <Grid item>
-          <Link to="/signin">Already have an account? Sign in</Link>
+          Already have an account? <Link to="/signin">Sign in</Link>
         </Grid>
       </Grid>
     </Container>
