@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { TextField, Button, Container, Typography, Grid } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../config/firebase";
+
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const validate = () => {
     const tempErrors = {};
@@ -15,18 +20,25 @@ export const SignIn = () => {
       tempErrors.email = "Email is not valid";
 
     if (!password) tempErrors.password = "Password is required";
-    else if (password.length <= 6)
+    else if (password.length < 6)
       tempErrors.password = "Password must be at least 6 characters long";
 
     setErrors(tempErrors);
     return Object.values(tempErrors).every((error) => error === "");
   };
 
-  const handleSignIn = () => {
+  const handleSignIn = async () => {
     if (validate()) {
-      // TODO Handle sign-in logic here
-      alert(`Sign In functionality not implemented yet.
-Email: ${email}`);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        toast.success("User Logged in successfully!", {
+          position: "top-right",
+        });
+        navigate("/");
+      } catch (error) {
+        console.log(error.message);
+        toast.error("Wrong email or password", { position: "top-right" });
+      }
     }
   };
 
@@ -65,7 +77,7 @@ Email: ${email}`);
       </Button>
       <Grid container justifyContent="flex-end">
         <Grid item>
-          <Link to="/signup">Don't have an account? Sign Up</Link>
+          Don't have an account? <Link to="/signup">Sign up</Link>
         </Grid>
       </Grid>
     </Container>
