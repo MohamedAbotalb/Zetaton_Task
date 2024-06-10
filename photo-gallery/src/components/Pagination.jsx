@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "@mui/material";
+import { Button, Box } from "@mui/material";
 
 export const Pagination = ({ page, handlePrev, handleNext }) => {
   return (
-    <div
+    <Box
       style={{
         display: "flex",
         justifyContent: "center",
@@ -22,6 +22,6 @@ export const Pagination = ({ page, handlePrev, handleNext }) => {
       <Button variant="contained" color="primary" onClick={handleNext}>
         Next
       </Button>
-    </div>
+    </Box>
   );
 };
