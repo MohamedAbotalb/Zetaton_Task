@@ -47,26 +47,26 @@ You can employ any HTTP client, such as Postman, to interact with the API. Simpl
 
 - Upload Image: Upload an image to Firebase Storage and store its URL in Firestore.
 
-  - Endpoint: POST /images
+  - Endpoint: `POST /images`
   - Request Body: Form-data with a field named image containing the image file.
   - Response: Returns the uploaded image data including its ID and URL.
 
 - Get All Images: Retrieve all uploaded images.
 
-  - Endpoint: GET /images
+  - Endpoint: `GET /images`
   - Response: Returns an array of image objects with their IDs and URLs.
 
 - Get Image by ID: Retrieve a specific image by its ID.
 
-  - Endpoint: GET /images/:id
+  - Endpoint: `GET /images/:id`
   - Response: Returns the image data including its ID and URL.
 
 - Delete Image by ID: Delete a specific image by its ID from Firebase Storage and Firestore.
 
-  - Endpoint: DELETE /images/:id
+  - Endpoint: `DELETE /images/:id`
   - Response: Returns a success message upon successful deletion
 
 - Shorten Image URL: Shorten the URL of a specific image and update it in Firestore.
 
-  - Endpoint: PUT /images/:id/shorten
+  - Endpoint: `PUT /images/:id/shorten`
   - Response: Returns the updated image data including its ID, URL, and shortened URL.
